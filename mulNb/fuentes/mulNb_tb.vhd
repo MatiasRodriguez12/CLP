@@ -15,8 +15,8 @@ architecture mulNb_tb_arq of mulNb_tb is
 	
 
 begin
-	b_tb <=  "00110101" after 100 ns, "10100101" after 300 ns, "10001101" after 500 ns, "11111111" after 700 ns;
-	a_tb <=  "01100101" after 200 ns, "00100101" after 400 ns, "10111001" after 600 ns, "11111111" after 900 ns;
+	b_tb <=  "00111101" after 100 ns, "10111101" after 300 ns, "10000011" after 500 ns, "11111111" after 700 ns;
+	a_tb <=  "01100101" after 200 ns, "00100001" after 400 ns, "10101011" after 600 ns, "11111111" after 900 ns;
 
 	DUT: entity work.mulNb
 		generic map(

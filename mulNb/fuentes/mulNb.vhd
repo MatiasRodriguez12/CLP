@@ -33,8 +33,8 @@ begin
 		mul_aux(i-1)  <=  p_auxiliar(i)(0) ;
 	end generate;
 	
-	sumNb_gen: for i in 1 to N generate
-		sumNb_inst: entity work.sumNb
+	sumresNb_gen: for i in 1 to N generate
+		sumNb_inst: entity work.sumresNb
 			generic map(
 				N => N
 			)
