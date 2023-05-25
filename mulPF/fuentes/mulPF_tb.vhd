@@ -7,17 +7,17 @@ end;
 
 architecture mulPF_tb_arq of mulPF_tb is
 	
-	constant	Nb_tb:			natural:= 32;
-	constant	Sesgo_tb: 		natural:= 127;
-	constant	Nb_exp_tb:		natural:= 8;
-	constant	Nb_frac_tb: 	natural:= 23;
+	constant	Nb_tb		: natural:= 32;
+	constant	Nb_exp_tb	: natural:= 8;
+	constant	Nb_frac_tb	: natural:= Nb_tb-Nb_exp_tb-1;
+	constant	Sesgo_tb	: natural:= 2**(Nb_exp_tb-1)-1;
 	
 	-- Declaracion de senales de prueba
-	signal a_tb: std_logic_vector(Nb_tb-1 downto 0) := "01000000000000000000000000000000";
-	signal b_tb: std_logic_vector(Nb_tb-1 downto 0) := "01000000000000000000000000000000";
-	signal mul_tb: std_logic_vector(Nb_tb-1 downto 0);
-	signal a_exp_tb: natural:= 0;
-	signal b_exp_tb: natural:= 0;
+	signal a_tb		: std_logic_vector(Nb_tb-1 downto 0);
+	signal b_tb		: std_logic_vector(Nb_tb-1 downto 0);
+	signal mul_tb	: std_logic_vector(Nb_tb-1 downto 0);
+	signal a_exp_tb	: natural:= 0;
+	signal b_exp_tb	: natural:= 0;
 	
 
 begin
@@ -37,9 +37,7 @@ begin
 	DUT: entity work.mulPF
 		generic map(
 			Nb 		=> Nb_tb,		
-			Sesgo	=> Sesgo_tb,
-			Nb_exp 	=> Nb_exp_tb,
-			Nb_frac => Nb_frac_tb
+			Nb_exp 	=> Nb_exp_tb
 		)
 		port map(
 			a_i	 	=> a_tb, 

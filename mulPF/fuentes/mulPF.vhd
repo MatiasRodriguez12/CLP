@@ -6,9 +6,7 @@ use ieee.numeric_std.all;
 entity mulPF is
 	generic(
 		Nb:			natural:= 32;
-		Sesgo: 		natural:= 127;
-		Nb_exp:		natural:= 8;
-		Nb_frac: 	natural:= 23
+		Nb_exp:		natural:= 8
 	);
 	port(
 		a_i: 	in std_logic_vector(Nb-1 downto 0);
@@ -18,14 +16,17 @@ entity mulPF is
 end;
 
 architecture mulPF_arq of mulPF is
-	signal a_exp,b_exp,mul_exp	: std_logic_vector(Nb_exp - 1 downto 0);
-	signal a_frac,b_frac		: std_logic_vector(Nb_frac downto 0);
-	signal a_sig,b_sig,mul_sig	: std_logic;
+	constant Nb_frac							: natural:= Nb-Nb_exp-1;
+	constant Sesgo								: natural:= 2**(Nb_exp-1)-1;
+
+	signal a_exp,b_exp,mul_exp					: std_logic_vector(Nb_exp - 1 downto 0);
+	signal a_frac,b_frac						: std_logic_vector(Nb_frac downto 0);
+	signal a_sig,b_sig,mul_sig					: std_logic;
 
 	signal sum_to_sum,sum_out,sum_out_extra		: std_logic_vector(Nb_exp downto 0);
-	signal sesgo_to_sum,sum_extra	: std_logic_vector(Nb_exp-1 downto 0);
-	signal mul_out					: std_logic_vector(2*Nb_frac+1 downto 0);
-	signal mul_frac					: std_logic_vector(Nb_frac-1 downto 0);
+	signal sesgo_to_sum,sum_extra				: std_logic_vector(Nb_exp-1 downto 0);
+	signal mul_out								: std_logic_vector(2*Nb_frac+1 downto 0);
+	signal mul_frac								: std_logic_vector(Nb_frac-1 downto 0);
 
 begin
 
@@ -38,10 +39,10 @@ begin
 
 	sesgo_to_sum <= std_logic_vector(to_unsigned(Sesgo,Nb_exp));
 	sum_extra	 <= std_logic_vector(to_unsigned(1,Nb_exp));
-	mul_exp		 <=	sum_out(Nb_exp-1 downto 0) when mul_out(2*Nb_frac+1)='0' else sum_out_extra(Nb_exp-1 downto 0);
-	mul_frac	 <=	mul_out(2*Nb_frac-1 downto Nb_frac) when mul_out(2*Nb_frac+1)='0' else mul_out(2*Nb_frac downto Nb_frac+1);
 
-	mul_sig <=  a_sig xor b_sig;
+	mul_exp	 <=	sum_out(Nb_exp-1 downto 0) when mul_out(2*Nb_frac+1)='0' else sum_out_extra(Nb_exp-1 downto 0);
+	mul_frac <=	mul_out(2*Nb_frac-1 downto Nb_frac) when mul_out(2*Nb_frac+1)='0' else mul_out(2*Nb_frac downto Nb_frac+1);
+	mul_sig	 <= a_sig xor b_sig;
 
 	sumNb_inst1: entity work.sumresNb
 		generic map(
