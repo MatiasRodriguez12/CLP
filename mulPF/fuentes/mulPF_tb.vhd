@@ -18,10 +18,11 @@ architecture mulPF_tb_arq of mulPF_tb is
 	signal mul_tb	: std_logic_vector(Nb_tb-1 downto 0);
 	signal a_exp_tb	: natural:= 0;
 	signal b_exp_tb	: natural:= 0;
+	signal clk		: std_logic:='0';
 	
 
 begin
-
+	clk <= not clk after 100 ns;
 	-- Para 32 bits de longitud
 	--a_tb<= '0' & std_logic_vector(to_unsigned(Sesgo_tb+a_exp_tb,Nb_exp_tb)) & std_logic_vector(to_unsigned(0,Nb_frac_tb)), 
 	--		X"3FC00000" after 100 ns,
