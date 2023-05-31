@@ -2,7 +2,6 @@ library IEEE;
 use IEEE.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-
 entity mulPF is
 	generic(
 		Nb:			natural:= 32;
@@ -37,10 +36,10 @@ begin
 	a_frac <= '1' & a_i(Nb_frac-1 downto 0);
 	b_frac <= '1' & b_i(Nb_frac-1 downto 0);
 
-	sesgo_to_sum <= std_logic_vector(to_unsigned(Sesgo,Nb_exp));
+	sesgo_to_sum <= std_logic_vector(to_unsigned(Sesgo,Nb_exp)) when mul_out(2*Nb_frac+1)='0' else std_logic_vector(to_unsigned(Sesgo-1,Nb_exp));
 	sum_extra	 <= std_logic_vector(to_unsigned(1,Nb_exp));
 
-	mul_exp	 <=	sum_out(Nb_exp-1 downto 0) when mul_out(2*Nb_frac+1)='0' else sum_out_extra(Nb_exp-1 downto 0);
+	mul_exp	 <=	sum_out(Nb_exp-1 downto 0);
 	mul_frac <=	mul_out(2*Nb_frac-1 downto Nb_frac) when mul_out(2*Nb_frac+1)='0' else mul_out(2*Nb_frac downto Nb_frac+1);
 	mul_sig	 <= a_sig xor b_sig;
 
@@ -66,18 +65,6 @@ begin
 			ci_i => '1',
 			s_o  => sum_out(Nb_exp-1 downto 0),
 			co_o => sum_out(Nb_exp)
-		);
-
-	sumNb_inst3: entity work.sumresNb
-		generic map(
-			N => Nb_exp
-		)
-		port map(
-			a_i  => sum_out(Nb_exp-1 downto 0),
-			b_i  => sum_extra,
-			ci_i => '0',
-			s_o  => sum_out_extra(Nb_exp-1 downto 0),
-			co_o => sum_out_extra(Nb_exp)
 		);
 
 	mulNb_inst: entity work.mulNb
