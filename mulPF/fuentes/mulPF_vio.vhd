@@ -4,12 +4,12 @@ use ieee.numeric_std.all;
 
 entity mulPF_vio is
 	port (
-		clk_i   : in std_logic
+		clk_i : in std_logic
 	);
 end;
 
 architecture mulPF_vio_arq of mulPF_vio is
-	
+
 	component mulPF is
 		generic (
 			Nb     : natural := 32;
@@ -22,38 +22,38 @@ architecture mulPF_vio_arq of mulPF_vio is
 		);
 	end component;
 
-  COMPONENT vio_0
-  PORT (
-    clk : IN STD_LOGIC;
-    probe_in0 : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-    probe_out0 : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-    probe_out1 : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
-  );
-END COMPONENT;
+	component vio_0
+		port (
+			clk        : in std_logic;
+			probe_in0  : in std_logic_vector(31 downto 0);
+			probe_out0 : out std_logic_vector(31 downto 0);
+			probe_out1 : out std_logic_vector(31 downto 0)
+		);
+	end component;
 
-	signal a_probe : std_logic_vector(31 downto 0);
-	signal b_probe : std_logic_vector(31 downto 0);
+	signal a_probe   : std_logic_vector(31 downto 0);
+	signal b_probe   : std_logic_vector(31 downto 0);
 	signal mul_probe : std_logic_vector(31 downto 0);
 
 begin
 
-	mul_pf : mulPF
-		generic map(
-			Nb => 32,
-			Nb_exp =>8
-		)
-		port map(
-			a_i   => a_probe,
-			b_i   => b_probe,
-			mul_o => mul_probe
-		);
+	mul_pf_inst1 : mulPF
+	generic map(
+		Nb     => 32,
+		Nb_exp => 8
+	)
+	port map(
+		a_i   => a_probe,
+		b_i   => b_probe,
+		mul_o => mul_probe
+	);
 
-	your_instance_name : vio_0
-  		PORT MAP (
-    	clk => clk_i,
-    	probe_in0 => mul_probe,
-    	probe_out0 => a_probe,
-    	probe_out1 => b_probe
-  	);
+	vio_inst2 : vio_0
+	port map(
+		clk        => clk_i,
+		probe_in0  => mul_probe,
+		probe_out0 => a_probe,
+		probe_out1 => b_probe
+	);
 
 end;
