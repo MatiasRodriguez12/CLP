@@ -16,18 +16,18 @@ end;
 
 architecture mulPF_arq of mulPF is
 
-	constant Nb_frac             : natural := Nb - Nb_exp - 1;
-	constant Sesgo               : natural := 2 ** (Nb_exp - 1) - 1;
+	constant Nb_frac                : natural := Nb - Nb_exp - 1;
+	constant Sesgo                  : natural := 2 ** (Nb_exp - 1) - 1;
 
-	signal a_exp, b_exp, mul_exp : std_logic_vector(Nb_exp - 1 downto 0);
-	signal a_mag, b_mag          : std_logic_vector(Nb_frac downto 0);
-	signal a_sig, b_sig, mul_sig : std_logic;
+	signal a_exp, b_exp, mul_exp    : std_logic_vector(Nb_exp - 1 downto 0);
+	signal a_mag, b_mag             : std_logic_vector(Nb_frac downto 0);
+	signal a_sig, b_sig, mul_sig    : std_logic;
 
-	signal sum_to_sum, sum_out   : std_logic_vector(Nb_exp downto 0);
-	signal sesgo_to_sum          : std_logic_vector(Nb_exp - 1 downto 0);
-	signal mul_out               : std_logic_vector(2 * Nb_frac + 1 downto 0);
-	signal mul_red, mul_frac     : std_logic_vector(Nb_frac downto 0);
-	signal sum_red               : std_logic_vector(Nb_frac - 1 downto 0);
+	signal sum_to_sum, sesgo_to_sum : std_logic_vector(Nb_exp downto 0);
+	signal sum_out                  : std_logic_vector(Nb_exp + 1 downto 0);
+	signal mul_out                  : std_logic_vector(2 * Nb_frac + 1 downto 0);
+	signal mul_red, mul_frac        : std_logic_vector(Nb_frac downto 0);
+	signal sum_red                  : std_logic_vector(Nb_frac - 1 downto 0);
 
 begin
 
@@ -38,7 +38,7 @@ begin
 	a_mag        <= '1' & a_i(Nb_frac - 1 downto 0);
 	b_mag        <= '1' & b_i(Nb_frac - 1 downto 0);
 
-	sesgo_to_sum <= std_logic_vector(to_unsigned(Sesgo, Nb_exp)) when mul_out(2 * Nb_frac + 1) = '0' else std_logic_vector(to_unsigned(Sesgo - 1, Nb_exp));
+	sesgo_to_sum <= std_logic_vector(to_unsigned(Sesgo, Nb_exp + 1)) when mul_out(2 * Nb_frac + 1) = '0' else std_logic_vector(to_unsigned(Sesgo - 1, Nb_exp + 1));
 
 	mul_red      <= mul_out(2 * Nb_frac - 1 downto Nb_frac - 1) when mul_out(2 * Nb_frac + 1) = '0' else mul_out(2 * Nb_frac downto Nb_frac);
 	sum_red      <= (Nb_frac - 2 downto 0 => '0') & mul_red(0);
@@ -62,14 +62,14 @@ begin
 	-- Resto sesgo (SESGO si no es necesaria la alineación de coma, SESGO-1 si es necesaria la alineación de coma)
 	res_sesgo_inst2 : entity work.sumresNb
 		generic map(
-			N => Nb_exp
+			N => Nb_exp + 1
 		)
 		port map(
-			a_i  => sum_to_sum(Nb_exp - 1 downto 0),
+			a_i  => sum_to_sum,
 			b_i  => sesgo_to_sum,
 			ci_i => '1',
-			s_o  => sum_out(Nb_exp - 1 downto 0),
-			co_o => sum_out(Nb_exp)
+			s_o  => sum_out(Nb_exp downto 0),
+			co_o => sum_out(Nb_exp + 1)
 		);
 
 	-- Multiplico las magnitudes de ambas entradas (tratándolos como números enteros sin signo)
